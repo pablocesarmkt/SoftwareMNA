@@ -3,7 +3,7 @@ FROM python:3.10
 WORKDIR /app
 
 # Install CMake and other dependencies
-RUN apt-get update && apt-get install -y cmake
+RUN apt-get update && apt-get install -y apt-utils cmake
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
