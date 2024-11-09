@@ -11,6 +11,8 @@ services:
       - DATABASE_URL=postgresql://user:password@db:5432/logs_db
     depends_on:
       - db
+    volumes:
+      - face_images:/app/face_img
 
   db:
     image: postgres:13
@@ -33,3 +35,4 @@ services:
 
 volumes:
   postgres_data:
+  face_images:
