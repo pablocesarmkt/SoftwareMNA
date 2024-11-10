@@ -1,0 +1,15 @@
+meta {
+  name: Acceso OK
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://127.0.0.1:8000/api/v1/search_face
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  face: @file(/Users/daniel/Downloads/SoftwareMNA/util/faces/daniel_002.jpeg)
+}

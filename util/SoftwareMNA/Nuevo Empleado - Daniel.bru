@@ -1,0 +1,21 @@
+meta {
+  name: Nuevo Empleado - Daniel
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/api/v1/employee
+  body: multipartForm
+  auth: none
+}
+
+body:json {
+  {}
+}
+
+body:multipart-form {
+  name: Daniel
+  email: daniel@example.com
+  face: @file(/Users/daniel/Downloads/SoftwareMNA/util/faces/daniel_001.jpeg)
+}

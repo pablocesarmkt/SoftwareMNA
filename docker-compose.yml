@@ -11,6 +11,8 @@ services:
       - DATABASE_URL=postgresql://user:password@db:5432/logs_db
     depends_on:
       - db
+    volumes:
+      - face_images:/app/face_img
 
   db:
     image: postgres:13
@@ -27,9 +29,12 @@ services:
   frontend:
     build:
       context: ./frontend
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html
     container_name: frontend
     ports:
-      - "80:80"
+      - "8080:80"
 
 volumes:
   postgres_data:
+  face_images:
