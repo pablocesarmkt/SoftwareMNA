@@ -15,7 +15,7 @@ function captureImage() {
     canvas.height = videoElement.videoHeight;
     let context = canvas.getContext("2d");
     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-    let imageData = canvas.toDataURL("image/png");
+    let imageData = canvas.toDataURL("image/jpeg");
 
     sendImageToBackend(imageData);
 }
@@ -23,7 +23,7 @@ function captureImage() {
 function sendImageToBackend(imageData) {
     // Convert the base64 data to a Blob
     let byteString = atob(imageData.split(',')[1]);
-    let mimeString = imageData.split(',')[0].split(':')[1].split(';')[0];
+    let mimeString = "image/jpeg";
     let buffer = new ArrayBuffer(byteString.length);
     let data = new Uint8Array(buffer);
 
@@ -35,22 +35,29 @@ function sendImageToBackend(imageData) {
 
     // Send the image to the backend
     let formData = new FormData();
-    formData.append("file", blob, "capture.png");
+    formData.append("face", blob, "capture.jpg");
 
-    fetch("http://34.172.135.76:8000/analyze/", {
+    fetch("/api/v1/search_face", {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        let messageElement = document.querySelector("#message");
-        if (data.result === "approved") {
-            messageElement.innerText = "Access Approved";
+    .then(response => {
+        if (response.ok) {
+            return response.json();
         } else {
-            messageElement.innerText = "Access Denied";
+            throw new Error("Face not recognized");
         }
     })
+    .then(data => {
+        document.getElementById("message").textContent = `Access granted for Employee ID: ${data.employee_id}`;
+    })
     .catch(error => {
-        console.error("Error:", error);
+        document.getElementById("message").textContent = "Access denied: Face not recognized.";
+    })
+    .finally(() => {
+        // Limpia el mensaje después de 30 segundos
+        setTimeout(() => {
+            document.getElementById("message").textContent = "";
+        }, 30000); // 30000 ms = 30 seconds
     });
 }

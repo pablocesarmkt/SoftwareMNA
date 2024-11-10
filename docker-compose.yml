@@ -29,9 +29,11 @@ services:
   frontend:
     build:
       context: ./frontend
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html
     container_name: frontend
     ports:
-      - "80:80"
+      - "8080:80"
 
 volumes:
   postgres_data:

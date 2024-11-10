@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Scan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-200">
+    <!-- Contenedor principal en forma de tarjeta -->
+    <div class="bg-white w-full max-w-md p-8 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-6 text-center">Face Recognition Access System</h1>
+
+        <div class="flex flex-col items-center space-y-4">
+            <video id="video" autoplay class="w-full h-48 bg-gray-300 rounded shadow"></video>
+            <button onclick="captureImage()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">
+                Scan Face
+            </button>
+            <p id="message" class="text-lg text-gray-700 text-center"></p>
+        </div>
+    </div>
+
+    <!-- Pie de página con la versión -->
+    <footer class="mt-8 text-gray-600 text-sm">
+        v0.1-Demo
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
