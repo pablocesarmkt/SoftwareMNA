@@ -12,6 +12,7 @@ import face_recognition
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from io import BytesIO
+from typing import List
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -49,6 +50,18 @@ class Log(Base):
     status = Column(String(50))
     user = relationship("User", back_populates="logs")
 
+# Esquema de Pydantic para la respuesta
+class EmployeeSchema(BaseModel):
+    id: str
+    name: str
+    email: str
+    # image_path: str
+
+    class Config:
+        orm_mode = True
+
+
+
 # Create the users and logs tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
@@ -64,6 +77,14 @@ class EmployeeCreate(BaseModel):
     name: str
     email: str
 
+# Endpoint para listar todos los empleados
+@app.get("/api/v1/employee", response_model=List[EmployeeSchema])
+async def list_employees():
+    db = SessionLocal()
+    employees = db.query(Employee).all()
+    # Convierte cada id a string para evitar problemas de serialización
+    return [{"id": str(emp.id), "name": emp.name, "email": emp.email, "image_path": emp.image_path} for emp in
+            employees]
 
 @app.post('/api/v1/employee')
 async def add_employee(
