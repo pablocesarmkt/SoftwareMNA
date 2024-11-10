@@ -20,8 +20,14 @@ function captureImage() {
     sendImageToBackend(imageData);
 }
 
-function sendImageToBackend(imageData) {
-    // Convert the base64 data to a Blob
+async function sendImageToBackend(imageData) {
+    // Mostrar mensaje de carga y desactivar el botón
+    const messageElement = document.getElementById("message");
+    const scanButton = document.querySelector("button");
+    messageElement.textContent = "Processing...";
+    scanButton.disabled = true;
+
+    // Convertir la cadena base64 a un Blob
     let byteString = atob(imageData.split(',')[1]);
     let mimeString = "image/jpeg";
     let buffer = new ArrayBuffer(byteString.length);
@@ -33,31 +39,30 @@ function sendImageToBackend(imageData) {
 
     let blob = new Blob([buffer], { type: mimeString });
 
-    // Send the image to the backend
+    // Enviar la imagen al backend
     let formData = new FormData();
     formData.append("face", blob, "capture.jpg");
 
-    fetch("/api/v1/search_face", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => {
+    try {
+        const response = await fetch("/api/v1/search_face", {
+            method: "POST",
+            body: formData
+        });
+
         if (response.ok) {
-            return response.json();
+            const data = await response.json();
+            messageElement.textContent = `Access granted for Employee ID: ${data.employee_id}`;
         } else {
-            throw new Error("Face not recognized");
+            messageElement.textContent = "Access denied: Face not recognized.";
         }
-    })
-    .then(data => {
-        document.getElementById("message").textContent = `Access granted for Employee ID: ${data.employee_id}`;
-    })
-    .catch(error => {
-        document.getElementById("message").textContent = "Access denied: Face not recognized.";
-    })
-    .finally(() => {
-        // Limpia el mensaje después de 30 segundos
+    } catch (error) {
+        messageElement.textContent = "Error: Could not process the request.";
+        console.error("Error:", error);
+    } finally {
+        // Reactivar el botón y limpiar el mensaje después de 30 segundos
+        scanButton.disabled = false;
         setTimeout(() => {
-            document.getElementById("message").textContent = "";
+            messageElement.textContent = "";
         }, 30000); // 30000 ms = 30 seconds
-    });
+    }
 }

@@ -157,29 +157,28 @@ async def search_face(
     target_encoding = target_encoding[0]  # Extrae el primer rostro encontrado
 
     db = SessionLocal()
-    try:
-        # Recorre cada registro en la base de datos para comparar la imagen cargada
-        for employee in db.query(Employee).all():
-            image_path = f"./face_img/{employee.id}.jpg"
 
-            # Verifica si el archivo de imagen existe
-            if os.path.exists(image_path):
-                # Carga la imagen del empleado
-                employee_image = face_recognition.load_image_file(image_path)
-                employee_encodings = face_recognition.face_encodings(employee_image)
+    # Recorre cada registro en la base de datos para comparar la imagen cargada
+    for employee in db.query(Employee).all():
+        image_path = f"./face_img/{employee.id}.jpg"
 
-                # Si no hay codificaciones en la imagen almacenada, la omite
-                if not employee_encodings:
-                    continue
+        # Verifica si el archivo de imagen existe
+        if os.path.exists(image_path):
+            # Carga la imagen del empleado
+            employee_image = face_recognition.load_image_file(image_path)
+            employee_encodings = face_recognition.face_encodings(employee_image)
 
-                # Compara la imagen enviada con la del empleado
-                if face_recognition.compare_faces([employee_encodings[0]], target_encoding, tolerance=0.6)[0]:
-                    return {"employee_id": str(employee.id)}
+            # Si no hay codificaciones en la imagen almacenada, la omite
+            if not employee_encodings:
+                continue
 
-        # Si no se encuentra coincidencia
-        raise HTTPException(status_code=404, detail="No se encontró coincidencia para el rostro proporcionado.")
-    finally:
-        db.close()
+            # Compara la imagen enviada con la del empleado
+            if face_recognition.compare_faces([employee_encodings[0]], target_encoding, tolerance=0.6)[0]:
+                return {"employee_id": str(employee.id)}
+
+    # Si no se encuentra coincidencia
+    raise HTTPException(status_code=404, detail="No se encontró coincidencia para el rostro proporcionado.")
+
 
 
 @app.post("/analyze/")
