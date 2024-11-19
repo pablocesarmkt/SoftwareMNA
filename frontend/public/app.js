@@ -53,7 +53,16 @@ async function sendImageToBackend(imageData) {
             const data = await response.json();
             messageElement.textContent = `Access granted for Employee ID: ${data.employee_id}`;
         } else {
-            messageElement.textContent = "Access denied: Face not recognized.";
+            if (response.status === 404) {
+                messageElement.textContent = "Access denied: Face not recognized.";
+            } else {
+                const errorText = await response.text();
+                if (errorText.includes("Acceso no autorizado para el empleado")) {
+                    messageElement.textContent = "Access denied: Unauthorized employee access level.";
+                } else {
+                    messageElement.textContent = "Access denied: Unexpected error.";
+                }
+            }
         }
     } catch (error) {
         messageElement.textContent = "Error: Could not process the request.";
