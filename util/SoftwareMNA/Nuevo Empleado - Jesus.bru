@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://127.0.0.1:8000/api/v1/employee
+  url: https://demo-maestria2.sistematn.net/api/v1/employee
   body: multipartForm
   auth: none
 }
@@ -15,7 +15,8 @@ body:json {
 }
 
 body:multipart-form {
-  name: Jesus
-  email: jesus@example.com
-  face: @file(/Users/daniel/Downloads/SoftwareMNA/util/faces/jesus_001.jpg)
+  name: Marcos
+  email: marcos@example.com
+  face: @file(/Users/daniel/Documents/Proyectos/SoftwareMNA/util/faces/marcos_001.jpg)
+  access_level: 3
 }

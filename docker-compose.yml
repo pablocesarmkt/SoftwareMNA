@@ -13,6 +13,7 @@ services:
       - db
     volumes:
       - face_images:/app/face_img
+      - ./backend:/app
 
   db:
     image: postgres:13
